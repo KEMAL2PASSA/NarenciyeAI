@@ -1,38 +1,96 @@
-<!doctype html>
+<<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Narenciye AI — Premium Yaprak Analizi</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🍊 NarenciyeAI | Akıllı Bitki Analizi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
 :root{--bg:#07180f;--card:#102b1d;--card2:#163925;--line:#ffffff1b;--txt:#f2fff4;--muted:#a8c5ad;--lime:#d5f47b;--green:#6fe49a;--orange:#ffc36f}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--txt);font-family:'DM Sans',sans-serif;background:radial-gradient(ellipse at 15% 0%,#1b5934 0,transparent 35%),radial-gradient(ellipse at 90% 30%,#435c24 0,transparent 27%),linear-gradient(145deg,#06150d,#0c2819 60%,#102d1c);overflow-x:hidden}
-body:before,body:after{content:"";position:fixed;z-index:-1;width:330px;height:330px;border-radius:50%;filter:blur(85px);opacity:.15;pointer-events:none;animation:float 12s ease-in-out infinite alternate}body:before{background:#28df7c;left:-190px;top:25%}body:after{background:#d4ef6d;right:-190px;bottom:0;animation-delay:-5s}
-@keyframes float{to{transform:translate(55px,-40px) scale(1.2)}}@keyframes enter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes scan{from{top:-20%}to{top:120%}}@keyframes pop{0%{opacity:0;transform:scale(.9)}70%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}@keyframes shine{to{background-position:200% center}}
-.wrap{width:min(1120px,calc(100% - 34px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:23px 0;animation:enter .6s both}
-.brand{display:flex;align-items:center;gap:11px;font:800 19px Manrope,sans-serif}.brandmark{width:43px;height:43px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--lime),#39c978);font-size:23px;color:#102b1d;box-shadow:0 8px 28px #42d78335}.brand span{color:var(--green)}
-.status{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:30px;background:#ffffff08;color:var(--muted);font-size:12px;font-weight:700}.dot{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 12px currentColor}.status.ready .dot{background:var(--green)}
-.hero{text-align:center;max-width:750px;margin:34px auto 37px;animation:enter .7s .08s both}.eyebrow{display:inline-block;color:var(--lime);border:1px solid #d5f47b38;background:#d5f47b0d;border-radius:30px;padding:8px 13px;font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}
-h1{font:800 clamp(38px,7vw,68px)/1.05 Manrope,sans-serif;letter-spacing:-3px;margin:18px 0 13px}h1 em{font-style:normal;background:linear-gradient(90deg,#d5f47b,#6fe49a,#d5f47b);background-size:200%;background-clip:text;color:transparent;animation:shine 5s linear infinite}.hero p{color:var(--muted);font-size:15px;line-height:1.7;margin:auto;max-width:590px}
-.fruits{display:flex;justify-content:center;gap:15px;margin:20px auto 0}.fruit{font-size:35px;filter:drop-shadow(0 8px 12px #0005);animation:bob 3.8s ease-in-out infinite}.fruit:nth-child(2){animation-delay:-1s}.fruit:nth-child(3){animation-delay:-2s}
-.layout{display:grid;grid-template-columns:1fr 1fr;gap:19px;align-items:stretch}.card{position:relative;overflow:hidden;background:linear-gradient(145deg,#153925ee,#0d281aee);border:1px solid #c2f0c51c;border-radius:24px;padding:24px;box-shadow:0 22px 65px #0003;animation:enter .7s .16s both}.card:before{content:"";position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,#bdf4c477,transparent)}
-.cardtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:19px}.card h2{font:700 18px Manrope,sans-serif;margin:0}.step{font-size:10px;letter-spacing:1.4px;color:var(--green);font-weight:800}
-.drop{min-height:245px;border:1.5px dashed #83c99580;border-radius:18px;background:linear-gradient(140deg,#b6f2c00d,#9be9ae08);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;cursor:pointer;transition:.25s;position:relative;overflow:hidden}.drop:hover,.drop.drag{border-color:var(--lime);background:#b4edb51a;transform:translateY(-3px);box-shadow:0 13px 32px #70e99b12}
-.uploadicon{width:83px;height:83px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(145deg,#b7f17b25,#42d88b20);border:1px solid #a9eeb23d;margin-bottom:14px;transition:.3s}.drop:hover .uploadicon{transform:rotate(-7deg) scale(1.08)}.uploadicon svg{width:45px;height:45px}.drop strong{font-size:16px}.drop p{font-size:12px;line-height:1.6;color:var(--muted);margin:7px 0 0}#fileInput{display:none}
-.previewbox{display:none;position:relative;margin-top:14px;background:#06150d;border:1px solid var(--line);border-radius:16px;overflow:hidden}#preview{display:block;width:100%;max-height:270px;object-fit:contain}.previewlabel{position:absolute;top:10px;left:10px;background:#07180fdf;padding:7px 10px;border:1px solid var(--line);border-radius:20px;font-size:10px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--txt);font-family:'DM Sans',sans-serif;background:radial-gradient(ellipse at 15% 0%,#1b5934 0,transparent 35%),radial-gradient(ellipse at 90% 30%,#435c24 0,transparent 27%),linear-gradient(145deg,#06150d,#0c2819 60%,#102d1c);overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;z-index:-1;width:330px;height:330px;border-radius:50%;filter:blur(85px);opacity:.15;pointer-events:none;animation:float 12s ease-in-out infinite alternate}
+body:before{background:#28df7c;left:-190px;top:25%}
+body:after{background:#d4ef6d;right:-190px;bottom:0;animation-delay:-5s}
+@keyframes float{to{transform:translate(55px,-40px) scale(1.2)}}
+@keyframes enter{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes scan{from{top:-20%}to{top:120%}}
+@keyframes pop{0%{opacity:0;transform:scale(.9)}70%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@keyframes shine{to{background-position:200% center}}
+.wrap{width:min(1120px,calc(100% - 34px));margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:23px 0;animation:enter .6s both}
+.brand{display:flex;align-items:center;gap:11px;font:800 19px Manrope,sans-serif}
+.brandmark{width:43px;height:43px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--lime),#39c978);font-size:23px;color:#102b1d;box-shadow:0 8px 28px #42d78335}
+.brand span{color:var(--green)}
+.status{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:30px;background:#ffffff08;color:var(--muted);font-size:12px;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 12px currentColor}
+.status.ready .dot{background:var(--green)}
+.hero{text-align:center;max-width:750px;margin:34px auto 37px;animation:enter .7s .08s both}
+.eyebrow{display:inline-block;color:var(--lime);border:1px solid #d5f47b38;background:#d5f47b0d;border-radius:30px;padding:8px 13px;font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}
+h1{font:800 clamp(38px,7vw,68px)/1.05 Manrope,sans-serif;letter-spacing:-3px;margin:18px 0 13px}
+h1 em{font-style:normal;background:linear-gradient(90deg,#d5f47b,#6fe49a,#d5f47b);background-size:200%;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+.hero p{color:var(--muted);font-size:15px;line-height:1.7;margin:auto;max-width:590px}
+.fruits{display:flex;justify-content:center;gap:15px;margin:20px auto 0}
+.fruit{font-size:35px;filter:drop-shadow(0 8px 12px #0005);animation:bob 3.8s ease-in-out infinite}
+.fruit:nth-child(2){animation-delay:-1s}
+.fruit:nth-child(3){animation-delay:-2s}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:19px;align-items:stretch}
+.card{position:relative;overflow:hidden;background:linear-gradient(145deg,#153925ee,#0d281aee);border:1px solid #c2f0c51c;border-radius:24px;padding:24px;box-shadow:0 22px 65px #0003;animation:enter .7s .16s both}
+.card:before{content:"";position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,#bdf4c477,transparent)}
+.cardtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:19px}
+.card h2{font:700 18px Manrope,sans-serif;margin:0}
+.step{font-size:10px;letter-spacing:1.4px;color:var(--green);font-weight:800}
+.drop{min-height:245px;border:1.5px dashed #83c99580;border-radius:18px;background:linear-gradient(140deg,#b6f2c00d,#9be9ae08);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.drop:hover,.drop.drag{border-color:var(--lime);background:#b4edb51a;transform:translateY(-3px);box-shadow:0 13px 32px #70e99b12}
+.uploadicon{width:83px;height:83px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(145deg,#b7f17b25,#42d88b20);border:1px solid #a9eeb23d;margin-bottom:14px;transition:.3s}
+.drop:hover .uploadicon{transform:rotate(-7deg) scale(1.08)}
+.uploadicon svg{width:45px;height:45px}
+.drop strong{font-size:16px}
+.drop p{font-size:12px;line-height:1.6;color:var(--muted);margin:7px 0 0}
+#fileInput{display:none}
+.previewbox{display:none;position:relative;margin-top:14px;background:#06150d;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+#preview{display:block;width:100%;max-height:270px;object-fit:contain}
+.previewlabel{position:absolute;top:10px;left:10px;background:#07180fdf;padding:7px 10px;border:1px solid var(--line);border-radius:20px;font-size:10px}
 .cameraBox{display:none;margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:16px;background:#06150d}
 #cameraVideo{display:block;width:100%;max-height:300px;object-fit:contain;border-radius:10px;background:#000}
 .cameraActions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
 .cameraActions .btn{flex:1;min-width:125px}
 .cameraNote{font-size:11px;color:var(--muted);line-height:1.5;margin:9px 2px 0}
-
-.actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}.btn{border:0;border-radius:13px;padding:14px 17px;font:800 13px 'DM Sans',sans-serif;cursor:pointer;transition:transform .18s,filter .18s,box-shadow .18s;position:relative;overflow:hidden}.btn:hover:not(:disabled){transform:translateY(-3px);filter:brightness(1.09);box-shadow:0 10px 25px #0003}.btn:active:not(:disabled){transform:translateY(1px) scale(.98)}.btn:disabled{opacity:.42;cursor:not-allowed}.primary{color:#092014;background:linear-gradient(110deg,#d4f47b,#67e49a);box-shadow:0 8px 22px #67e49a25}.primary:after{content:"";position:absolute;top:-80%;left:-40%;width:30%;height:260%;background:#ffffff70;transform:rotate(25deg);transition:left .5s}.primary:hover:after{left:120%}.soft{color:#d5f4dc;background:#ffffff0d;border:1px solid var(--line);padding-inline:16px}
-.result{min-height:208px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px}.resulticon{font-size:49px;margin-bottom:8px;filter:drop-shadow(0 8px 15px #0004)}.result h3{font:800 20px Manrope,sans-serif;margin:4px 0 8px}.result p{color:var(--muted);font-size:13px;line-height:1.65;max-width:330px;margin:0}.result.good h3{color:var(--green)}.result.warn h3{color:var(--orange)}.result.pop{animation:pop .45s ease}
+.actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}
+.btn{border:0;border-radius:13px;padding:14px 17px;font:800 13px 'DM Sans',sans-serif;cursor:pointer;transition:transform .18s,filter .18s,box-shadow .18s;position:relative;overflow:hidden}
+.btn:hover:not(:disabled){transform:translateY(-3px);filter:brightness(1.09);box-shadow:0 10px 25px #0003}
+.btn:active:not(:disabled){transform:translateY(1px) scale(.98)}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.primary{color:#092014;background:linear-gradient(110deg,#d4f47b,#67e49a);box-shadow:0 8px 22px #67e49a25}
+.primary:after{content:"";position:absolute;top:-80%;left:-40%;width:30%;height:260%;background:#ffffff70;transform:rotate(25deg);transition:left .5s}
+.primary:hover:after{left:120%}
+.soft{color:#d5f4dc;background:#ffffff0d;border:1px solid var(--line);padding-inline:16px}
+.result{min-height:208px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px}
+.resulticon{font-size:49px;margin-bottom:8px;filter:drop-shadow(0 8px 15px #0004)}
+.result h3{font:800 20px Manrope,sans-serif;margin:4px 0 8px}
+.result p{color:var(--muted);font-size:13px;line-height:1.65;max-width:330px;margin:0}
+.result.good h3{color:var(--green)}
+.result.warn h3{color:var(--orange)}
+.result.pop{animation:pop .45s ease}
 .loader{width:35px;height:35px;border:3px solid #ffffff20;border-top-color:var(--lime);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 13px}
-#predictions{margin-top:12px}#predictions h4{font-size:12px;color:var(--muted);margin:0 0 12px;letter-spacing:1px;text-transform:uppercase}.stat{display:flex;justify-content:space-between;gap:12px;font-size:12px;margin:11px 0 6px}.stat b{color:var(--lime)}.track{height:8px;border-radius:20px;background:#ffffff12;overflow:hidden}.track div{height:100%;width:0;background:linear-gradient(90deg,#35bf78,#d4f47b);border-radius:20px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
-.tip{margin-top:16px;padding:12px 13px;border:1px solid #ffc36f25;background:#ffc36f0b;color:#dfc18d;border-radius:13px;font-size:11px;line-height:1.6}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:19px;animation:enter .8s .28s both}.feature{padding:15px;border:1px solid var(--line);border-radius:16px;background:#ffffff08;text-align:center}.feature b{display:block;font-size:12px;margin:5px 0}.feature span{font-size:20px}.feature small{font-size:10px;color:var(--muted)}
+#predictions{margin-top:12px}
+#predictions h4{font-size:12px;color:var(--muted);margin:0 0 12px;letter-spacing:1px;text-transform:uppercase}
+.stat{display:flex;justify-content:space-between;gap:12px;font-size:12px;margin:11px 0 6px}
+.stat b{color:var(--lime)}
+.track{height:8px;border-radius:20px;background:#ffffff12;overflow:hidden}
+.track div{height:100%;width:0;background:linear-gradient(90deg,#35bf78,#d4f47b);border-radius:20px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.tip{margin-top:16px;padding:12px 13px;border:1px solid #ffc36f25;background:#ffc36f0b;color:#dfc18d;border-radius:13px;font-size:11px;line-height:1.6}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:19px;animation:enter .8s .28s both}
+.feature{padding:15px;border:1px solid var(--line);border-radius:16px;background:#ffffff08;text-align:center}
+.feature b{display:block;font-size:12px;margin:5px 0}
+.feature span{font-size:20px}
+.feature small{font-size:10px;color:var(--muted)}
 footer{text-align:center;color:#789b80;font-size:11px;padding:28px 0 35px}
 @media(max-width:760px){.layout{grid-template-columns:1fr}.hero{margin-top:20px}.card{padding:19px}h1{letter-spacing:-2px}.features{gap:8px}.feature{padding:12px 7px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
@@ -66,18 +124,22 @@ footer{text-align:center;color:#789b80;font-size:11px;padding:28px 0 35px}
       <p>Buraya sürükleyip bırakabilir veya tıklayarak<br>cihazından JPG, PNG ya da WEBP seçebilirsin.</p>
     </label>
     <input id="fileInput" type="file" accept="image/*">
+
     <div class="cameraActions">
       <button class="btn soft" id="openCameraButton" type="button">📷 Kamerayı Aç</button>
-      <button class="btn soft" id="closeCameraButton" type="button" hidden disabled>✕ Kamerayı Kapat</button>
+      <button class="btn soft" id="closeCameraButton" type="button" hidden>✕ Kamerayı Kapat</button>
     </div>
+
     <div class="cameraBox" id="cameraBox">
       <video id="cameraVideo" autoplay playsinline muted></video>
       <div class="cameraActions">
         <button class="btn primary" id="captureButton" type="button">📸 Fotoğraf Çek</button>
       </div>
-      <p class="cameraNote">Kamera görüntüsü yalnızca bu sayfada kullanılır. Fotoğrafı çektiğinde mevcut yapay zekâ modeline gönderilir.</p>
+      <p class="cameraNote">Kamera görüntüsü bu sayfada işlenir. Çektiğin fotoğraf mevcut yapay zekâ modeline aktarılır.</p>
     </div>
+
     <canvas id="captureCanvas" hidden></canvas>
+
     <div class="previewbox" id="previewBox"><img id="preview" alt="Seçilen yaprak fotoğrafı"><span class="previewlabel">✓ Fotoğraf seçildi</span></div>
     <div class="actions">
       <button class="btn primary" id="analyzeButton" disabled>✦ &nbsp; ANALİZİ BAŞLAT</button>
@@ -110,15 +172,21 @@ const $ = id => document.getElementById(id);
 const input = $("fileInput"), preview = $("preview"), previewBox = $("previewBox");
 const analyzeButton = $("analyzeButton"), result = $("result"), predictionsBox = $("predictions");
 const dropArea = $("dropArea"), modelStatus = $("modelStatus"), statusText = $("statusText");
-const cameraBox = $("cameraBox"), cameraVideo = $("cameraVideo");
-const openCameraButton = $("openCameraButton"), closeCameraButton = $("closeCameraButton");
-const captureButton = $("captureButton"), captureCanvas = $("captureCanvas");
+
+const cameraBox = $("cameraBox");
+const cameraVideo = $("cameraVideo");
+const openCameraButton = $("openCameraButton");
+const closeCameraButton = $("closeCameraButton");
+const captureButton = $("captureButton");
+const captureCanvas = $("captureCanvas");
+
 let model = null, imageReady = false, imageUrl = null, busy = false, cameraStream = null;
 
 function showResult(icon, title, message, type = "") {
   result.className = "result pop " + type;
   result.innerHTML = `<div class="resulticon">${icon}</div><h3>${title}</h3><p>${message}</p>`;
 }
+
 async function loadModel() {
   try {
     model = await tmImage.load("./model.json", "./metadata.json");
@@ -132,6 +200,7 @@ async function loadModel() {
     showResult("⚠️", "Model açılamadı", "model.json, metadata.json ve weights.bin dosyalarının index.html ile aynı klasörde olduğunu ve internet bağlantısını kontrol et.");
   }
 }
+
 function stopCamera() {
   if (cameraStream) {
     cameraStream.getTracks().forEach(track => track.stop());
@@ -140,26 +209,25 @@ function stopCamera() {
   cameraVideo.srcObject = null;
   cameraBox.style.display = "none";
   closeCameraButton.hidden = true;
-  closeCameraButton.disabled = true;
   openCameraButton.disabled = false;
 }
 
 async function startCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    showResult("⚠️", "Kamera açılamadı", "Kamera için HTTPS veya localhost bağlantısı gerekir. Siteyi güvenli bağlantı üzerinden açmayı dene.", "warn");
+    showResult("⚠️", "Kamera açılamadı", "Kamera erişimi için HTTPS veya localhost bağlantısı gerekir.", "warn");
     return;
   }
 
   openCameraButton.disabled = true;
   openCameraButton.textContent = "⏳ Kamera açılıyor...";
+
   try {
     try {
       cameraStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" } },
         audio: false
       });
-    } catch (firstError) {
-      // Bazı bilgisayarlarda arka kamera seçeneği bulunmayabilir.
+    } catch (err) {
       cameraStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: false
@@ -169,7 +237,6 @@ async function startCamera() {
     cameraVideo.srcObject = cameraStream;
     cameraBox.style.display = "block";
     closeCameraButton.hidden = false;
-    closeCameraButton.disabled = false;
     await cameraVideo.play();
     showResult("📷", "Kamera hazır", "Yaprağı kadraja yerleştir ve Fotoğraf Çek butonuna bas.");
   } catch (error) {
@@ -190,17 +257,22 @@ function capturePhoto() {
 
   captureCanvas.width = cameraVideo.videoWidth;
   captureCanvas.height = cameraVideo.videoHeight;
-  const context = captureCanvas.getContext("2d");
-  context.drawImage(cameraVideo, 0, 0, captureCanvas.width, captureCanvas.height);
+  captureCanvas.getContext("2d").drawImage(
+    cameraVideo, 0, 0, captureCanvas.width, captureCanvas.height
+  );
 
   captureCanvas.toBlob(blob => {
     if (!blob) {
-      showResult("❌", "Fotoğraf alınamadı", "Lütfen tekrar fotoğraf çek.");
+      showResult("❌", "Fotoğraf alınamadı", "Lütfen tekrar dene.", "warn");
       return;
     }
-    const photoFile = new File([blob], "narenciyeai-kamera-fotografi.jpg", { type: "image/jpeg" });
+
+    const file = new File([blob], "narenciyeai-kamera.jpg", {
+      type: "image/jpeg"
+    });
+
     stopCamera();
-    selectFile(photoFile);
+    selectFile(file);
   }, "image/jpeg", 0.92);
 }
 
@@ -211,67 +283,132 @@ captureButton.addEventListener("click", capturePhoto);
 function selectFile(file) {
   if (!file) return;
   stopCamera();
-  if (!file.type.startsWith("image/")) { alert("Lütfen bir resim dosyası seç."); return; }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Lütfen bir resim dosyası seç.");
+    return;
+  }
+
   if (imageUrl) URL.revokeObjectURL(imageUrl);
   imageUrl = URL.createObjectURL(file);
+
   preview.onload = () => {
-    imageReady = true; previewBox.style.display = "block";
+    imageReady = true;
+    previewBox.style.display = "block";
     analyzeButton.disabled = !model || busy;
     predictionsBox.hidden = true;
     showResult("🍃", "Fotoğraf hazır", model ? "Harika! Şimdi ANALİZİ BAŞLAT butonuna bas." : "Modelin yüklenmesi bekleniyor.");
   };
+
   preview.src = imageUrl;
 }
+
 input.addEventListener("change", () => selectFile(input.files[0]));
-dropArea.addEventListener("dragover", e => { e.preventDefault(); dropArea.classList.add("drag"); });
+
+dropArea.addEventListener("dragover", e => {
+  e.preventDefault();
+  dropArea.classList.add("drag");
+});
+
 dropArea.addEventListener("dragleave", () => dropArea.classList.remove("drag"));
-dropArea.addEventListener("drop", e => { e.preventDefault(); dropArea.classList.remove("drag"); selectFile(e.dataTransfer.files[0]); });
+
+dropArea.addEventListener("drop", e => {
+  e.preventDefault();
+  dropArea.classList.remove("drag");
+  selectFile(e.dataTransfer.files[0]);
+});
 
 function classType(label) {
-  const name = String(label).toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll("ı", "i");
+  const name = String(label).toLocaleLowerCase("tr-TR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replaceAll("ı", "i");
+
   if (name.includes("sagliksiz") || name.includes("hastalikli") || name.includes("hasta")) return "bad";
   if (name.includes("saglikli") || name.includes("healthy") || name.includes("saglam")) return "good";
   return "unknown";
 }
+
 function safeText(value) {
-  return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
 }
+
 analyzeButton.addEventListener("click", async () => {
   if (!model || !imageReady || busy) return;
-  busy = true; analyzeButton.disabled = true; analyzeButton.textContent = "⏳ ANALİZ EDİLİYOR...";
+
+  busy = true;
+  analyzeButton.disabled = true;
+  analyzeButton.textContent = "⏳ ANALİZ EDİLİYOR...";
   result.className = "result";
   result.innerHTML = '<div class="loader"></div><h3>Yaprak inceleniyor...</h3><p>NarenciyeAI modelin tahmin oluşturuyor.</p>';
   predictionsBox.hidden = true;
+
   try {
     const predictions = await model.predict(preview);
     predictions.sort((a,b) => b.probability - a.probability);
-    const best = predictions[0], confidence = (best.probability * 100).toFixed(1);
+
+    const best = predictions[0];
+    const confidence = (best.probability * 100).toFixed(1);
     const type = classType(best.className);
-    if (type === "good") showResult("✅", "SAĞLIKLI SINIFI", `Model bu fotoğrafı sağlıklı sınıfına yerleştirdi. Model güven puanı: %${confidence}.`, "good");
-    else if (type === "bad") showResult("⚠️", "HASTALIKLI SINIFI", `Model bu fotoğrafı hastalıklı sınıfına yerleştirdi. Model güven puanı: %${confidence}.`, "warn");
-    else showResult("🔎", "MODEL TAHMİNİ", `En yüksek sınıf: ${best.className}. Model güven puanı: %${confidence}.`, "");
+
+    if (type === "good") {
+      showResult("✅", "SAĞLIKLI SINIFI", `Model bu fotoğrafı sağlıklı sınıfına yerleştirdi. Model güven puanı: %${confidence}.`, "good");
+    } else if (type === "bad") {
+      showResult("⚠️", "HASTALIKLI SINIFI", `Model bu fotoğrafı hastalıklı sınıfına yerleştirdi. Model güven puanı: %${confidence}.`, "warn");
+    } else {
+      showResult("🔎", "MODEL TAHMİNİ", `En yüksek sınıf: ${best.className}. Model güven puanı: %${confidence}.`, "");
+    }
+
     predictionsBox.hidden = false;
     predictionsBox.innerHTML = "<h4>Modelin sınıf tahminleri</h4>" + predictions.map(p => {
       const pct = (p.probability * 100).toFixed(1);
       return `<div class="stat"><span>${safeText(p.className)}</span><b>%${pct}</b></div><div class="track"><div data-width="${pct}"></div></div>`;
     }).join("");
-    requestAnimationFrame(() => predictionsBox.querySelectorAll(".track div").forEach(el => el.style.width = el.dataset.width + "%"));
+
+    requestAnimationFrame(() => {
+      predictionsBox.querySelectorAll(".track div").forEach(el => {
+        el.style.width = el.dataset.width + "%";
+      });
+    });
+
   } catch (error) {
     console.error("Tahmin hatası:", error);
     showResult("❌", "Analiz tamamlanamadı", "Fotoğrafı tekrar seçip yeniden dene.");
   } finally {
-    busy = false; analyzeButton.disabled = !model || !imageReady;
+    busy = false;
+    analyzeButton.disabled = !model || !imageReady;
     analyzeButton.textContent = "✦  TEKRAR ANALİZ ET";
   }
 });
+
 $("resetButton").addEventListener("click", () => {
   stopCamera();
-  input.value = ""; if (imageUrl) URL.revokeObjectURL(imageUrl); imageUrl = null;
-  preview.removeAttribute("src"); previewBox.style.display = "none"; imageReady = false;
-  predictionsBox.hidden = true; analyzeButton.disabled = !model || busy;
+  input.value = "";
+
+  if (imageUrl) URL.revokeObjectURL(imageUrl);
+  imageUrl = null;
+
+  preview.removeAttribute("src");
+  previewBox.style.display = "none";
+  imageReady = false;
+  predictionsBox.hidden = true;
+
+  analyzeButton.disabled = !model || busy;
   analyzeButton.textContent = "✦  ANALİZİ BAŞLAT";
-  showResult(model ? "🌱" : "⏳", model ? "Yeni analiz bekleniyor" : "Model yükleniyor", model ? "Yeni bir yaprak fotoğrafı seçebilirsin." : "Model hazırlanıyor.");
+
+  showResult(
+    model ? "🌱" : "⏳",
+    model ? "Yeni analiz bekleniyor" : "Model yükleniyor",
+    model ? "Yeni bir yaprak fotoğrafı seçebilirsin." : "Model hazırlanıyor."
+  );
 });
+
 loadModel();
 </script>
 </body>
